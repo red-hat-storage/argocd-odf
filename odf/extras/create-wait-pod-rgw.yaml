@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-pod-job-rgw
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+    compare-options: IgnoreExtraneous
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: wait-pod
+        command: ["/bin/sh","-c"]
+        args: ["oc login https://kubernetes.default.svc.cluster.local --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) --insecure-skip-tls-verify; for i in $(oc get pods -o custom-columns=POD:.metadata.name --no-headers -n openshift-storage) ; do oc wait  --for condition=Ready pod/$i -n openshift-storage --timeout=180s ; sleep 30 ; done"]
+        image:  openshift/origin-cli:latest 
+      serviceAccount: query-pods
+      serviceAccountName: query-pods
+      restartPolicy: Never

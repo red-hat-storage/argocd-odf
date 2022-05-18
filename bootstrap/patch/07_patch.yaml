@@ -1,0 +1,5 @@
+spec:
+  config:
+    env:
+    - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
+      value: openshift-operators,gitops-argocd

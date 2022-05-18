@@ -1,0 +1,105 @@
+{{- if not $.Values.mcgstandalone.enabled }}
+---
+apiVersion: ocs.openshift.io/v1
+kind: StorageCluster
+metadata:
+  annotations:
+    uninstall.ocs.openshift.io/cleanup-policy: delete
+    uninstall.ocs.openshift.io/mode: graceful
+  finalizers:
+  - storagecluster.ocs.openshift.io
+  name: ocs-storagecluster
+  namespace: openshift-storage
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  arbiter: {}
+  {{- if eq $.Values.osds.scname "localblock" }}
+  flexibleScaling: {{ default "true" $.Values.odf.flexibleScaling }}
+  {{- else}}
+  flexibleScaling: {{ default "false" $.Values.odf.flexibleScaling }}
+  {{- end }}
+  encryption:
+  {{- if $.Values.osds.encryption.enabled }}
+    enable: true
+  {{- else}}
+    enable: false
+  {{- end }}
+    kms: {}
+  externalStorage: {}
+  managedResources:
+    cephBlockPools: {}
+    cephConfig: {}
+    cephDashboard: {}
+    cephFilesystems: {}
+    cephObjectStoreUsers: {}
+    cephObjectStores: {}
+  {{- if not $.Values.mcg.enabled }}
+  multiCloudGateway:
+    reconcileStrategy: ignore
+  {{- end }}
+  {{- if eq $.Values.osds.scname "localblock" }}
+  monDataDirHostPath: /var/lib/rook
+  {{- end }}
+  nodeTopologies: {}
+  resources:
+    mon:
+      requests:
+        cpu: '{{ .Values.odf.mon.requests.cpu }}'
+        memory: {{ .Values.odf.mon.requests.memory }}
+    mds:
+      requests:
+        cpu: '{{ .Values.odf.mds.requests.cpu }}'
+        memory: {{ .Values.odf.mds.requests.memory }}
+    mgr:
+      requests:
+        cpu: '{{ .Values.odf.mgr.requests.cpu }}'
+        memory: {{ .Values.odf.mgr.requests.memory }}
+    noobaa-core:
+      requests:
+        cpu: '{{ .Values.odf.noobaacore.requests.cpu }}'
+        memory: {{ .Values.odf.noobaacore.requests.memory }}
+    noobaa-db:
+      requests:
+        cpu: '{{ .Values.odf.noobaadb.requests.cpu }}'
+        memory: {{ .Values.odf.noobaadb.requests.memory }}
+  storageDeviceSets:
+  - config: {}
+    {{- if eq $.Values.osds.scname "localblock" }}
+    count: {{ default "1" $.Values.osds.devicesetcount }}
+    {{- else}}
+    count: {{ default "1" $.Values.osds.devicesetcount }}
+    {{- end }}
+    dataPVCTemplate:
+      metadata: {}
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            {{- if eq $.Values.osds.scname "localblock" }}
+            storage: 1
+            {{- else}}
+            storage: {{ $.Values.osds.disksize }}
+            {{- end }}
+        storageClassName: {{ $.Values.osds.scname }}
+        volumeMode: Block
+      status: {}
+    name: ocs-deviceset-{{ $.Values.osds.scname }}
+    placement: {}
+    {{- if eq $.Values.osds.scname "localblock" }}
+    portable: false
+    {{- else}}
+    portable: true
+    {{- end }}
+    preparePlacement: {}
+    replica: {{ default "3 " $.Values.osds.replicas }}
+    resources:
+        limits:
+          cpu: '{{ .Values.odf.osd.limits.cpu }}'
+          memory: {{ .Values.odf.osd.limits.memory }}
+        requests:
+          cpu: '{{ .Values.odf.osd.requests.cpu }}'
+          memory: {{ .Values.odf.osd.requests.memory }}
+{{- end }}

@@ -1,0 +1,108 @@
+##
+# ODF Chart Values File.
+##
+#
+
+
+## If MCG multi cloud gateways stand alone is enabled, only MCG will be
+#deployed no ODF/Rook/Ceph components will get installed.
+mcgstandalone:
+  enabled: false
+# IF deploying MCG standalone the storage claas that will be used for the
+# Noobaa Database, and PV backing store on-premise.
+  scname: 'gp3-csi'
+
+odf:
+# ODF Version/Channel
+  channel: 'stable-4.10'
+# Resource request/limits per service
+  mon:
+    requests:
+       cpu: 1
+       memory: 2Gi
+  mds:
+    requests:
+      cpu: 3
+      memory: 8Gi
+  mgr:
+    requests:
+      cpu: 1
+      memory: 3Gi
+  noobaacore:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 2Gi
+  noobaadb:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 1
+      memory: 2Gi
+  osd:
+    requests:
+      cpu: 2
+      memory: 5Gi
+    limits:
+      cpu: 3
+      memory: 7Gi
+  rgw:
+    requests:
+      cpu: 1
+      memory: 4Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+
+
+
+### RGW section Only relevant if deploying in AWS
+# If RGW enabled, RGW object store will be deployed in AWS
+rgw: 
+  enabled: true
+# Enable S3 RGW endpoint with SSL
+  ssl: true
+# Failure domain for the RGW pools, by default zone, depeding on your deployment you may need to
+# change it to rack, zone or node.
+  failuredomain: zone
+###
+
+# If mcg enabled is set to False Nooba/Multicloud gateway will not be deployed.
+mcg:
+  enabled: true
+
+# Deploy CephTools with ODF
+cephtools:
+  enabled: true
+
+# If OCP Cluster is deployed in AWS and dedicated option enabled it will deploy 3 ODF workers(m5.4xlarge) using machinesets one per AZ, .
+dedicated: 
+  enabled: false
+  aws:
+    #you can use $ oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].metadata.labels.machine\.openshift\.io/cluster-api-cluster}'
+    clusterid: 'cluster-tlhvx-wmzb6'
+    #youn can use $oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.placement.region}' 
+    region: 'us-east-2'
+    #you can use $oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.ami.id}'
+    coreosami: 'ami-03d9208319c96db0c'
+
+# Enable Flexible scaling.
+# flexibleScaling: false
+
+# Configure StorageCluster
+osds:
+# Number of OSDs that will be deployed, if replica is set to 3 by defau,t, setting 1 here equals to 3 OSDs, 2 = 6 OSDs, etc.
+# If replica is set to 1 , setting 1 in devicesetcount will get you 1 OSD.
+  devicesetcount: 1
+#Enable cluster OSD encription
+  encryption:
+    enabled: false
+#Number of replicas for the device set configuration. Set to 3 by default.
+#  replicas: 3
+#Storage Class that will be used to provision the ODF OSDs. If using LSO set it to 'localblock'
+  scname: 'thin'
+#Size of Each PV that will be provisioned to be used by the OSDs.
+  disksize: '512Gi'

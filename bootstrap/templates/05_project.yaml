@@ -1,0 +1,17 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: data-odf
+spec:
+  description: data-odf-example
+  sourceRepos:
+    - '{{ $.Values.helmRepoUrl }}'
+  destinations:
+{{- range $ns := $.Values.namespaces }}
+    - namespace: {{ $ns }}
+      server: https://kubernetes.default.svc
+{{- end }} 
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

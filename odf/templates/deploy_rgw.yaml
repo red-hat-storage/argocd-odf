@@ -1,0 +1,65 @@
+{{- if not $.Values.mcgstandalone.enabled }}
+{{- if $.Values.rgw.enabled }}
+---
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStore
+metadata:
+  name: ocs-cephobjectstore
+  namespace: openshift-storage
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  dataPool:
+    erasureCoded:
+      codingChunks: 0
+      dataChunks: 0
+    failureDomain: {{ $.Values.rgw.failuredomain }}
+    replicated:
+      size: {{ $.Values.osds.replicas }}
+  gateway:
+    instances: 2
+    placement:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: cluster.ocs.openshift.io/openshift-storage
+              operator: Exists
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - rook-ceph-rgw
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+      tolerations:
+      - effect: NoSchedule
+        key: node.ocs.openshift.io/storage
+        operator: Equal
+        value: "true"
+    port: 80
+    securePort: 443
+    service:
+      annotations:
+        service.beta.openshift.io/serving-cert-secret-name: ocs-storagecluster-cos-ceph-rgw-tls-cert
+    resources:
+      limits:
+        cpu: '{{ .Values.odf.rgw.limits.cpu }}'
+        memory: {{ .Values.odf.rgw.limits.memory }}
+      requests:
+        cpu: '{{ .Values.odf.rgw.requests.cpu }}'
+        memory: {{ .Values.odf.rgw.requests.memory }}
+  metadataPool:
+    erasureCoded:
+      codingChunks: 0
+      dataChunks: 0
+    failureDomain: {{ $.Values.rgw.failuredomain }}
+    replicated:
+      size: {{ $.Values.osds.replicas }}
+{{- end }}
+{{- end }}

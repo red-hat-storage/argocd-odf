@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-pod-odfoperator-job
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    compare-options: IgnoreExtraneous
+spec:
+  template:
+    spec:
+      containers:
+      - name: wait-pod
+        command:
+            - /bin/bash
+            - -c
+            - |
+              set -x
+              echo "Checking if the ODF operator has finished it's deployment"
+              sleep 180
+              for i in 'name=ocs-operator' 'app=noobaa' 'app=rook-ceph-operator'
+              do
+                oc wait --for condition=Ready pod  --selector=${i} -n openshift-storage --timeout=180s
+                sleep 5
+              done
+              echo "ODF operator has been deployed"
+              echo "========================"
+        image:  registry.redhat.io/openshift4/ose-cli:v4.7
+      serviceAccount: query-pods
+      serviceAccountName: query-pods
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 30
+

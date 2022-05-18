@@ -1,0 +1,34 @@
+{{- if not $.Values.mcgstandalone.enabled }}
+{{- if $.Values.dedicated.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-pod-job-machineset
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+    compare-options: IgnoreExtraneous
+spec:
+  template:
+    spec:
+      containers:
+      - name: wait-pod
+        command:
+            - /bin/bash
+            - -c
+            - |
+              set -x
+              echo "Checking if the Machines from the ODF Machineset have finished deploying"
+              sleep 60
+              while [ $(oc get machines -n openshift-machine-api | grep -E '(workerocs.*Running)' | wc -l) -lt 3 ]
+              do
+                  echo 'machines not ready'
+                  sleep 10
+              done
+              echo "ODF Machine worker nodes have finished the deployment" 
+        image: registry.redhat.io/openshift4/ose-cli:v4.7
+      serviceAccount: query-pods
+      serviceAccountName: query-pods
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 30
+{{- end }}
+{{- end }}
