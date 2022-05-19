@@ -1,15 +1,15 @@
 # Deployment of ODF with ArgoCD
 
-1. Fork and clone this Github Repo: https://github.com/likid0/argocd-odf/
+1. Fork and clone this Github Repo: https://github.com/red-hat-storage/argocd-odf
 
-```
-gh repo fork  git@github.com:likid0/argocd-odf.git --clone 
+``` 
+gh repo fork https://github.com/red-hat-storage/argocd-odf.git  --clone 
 ```
 
 2. Modify the values/variables for the Helm charts as needed:
 
 - Argocd Bootstrap and ODF,LSO application configuration, at a bare minimum you
-  would need to modify the helmRepoUrl variable and set it with your forked
+  would need to modify the helmRepoUrl variable in the bootstrap/values.yaml file and set it with your forked
   GitHub repo URL.
 
 ```
