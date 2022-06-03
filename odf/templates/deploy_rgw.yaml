@@ -14,9 +14,9 @@ spec:
     erasureCoded:
       codingChunks: 0
       dataChunks: 0
-    failureDomain: {{ $.Values.rgw.failuredomain }}
+    failureDomain: {{ default "zone" $.Values.rgw.failuredomain }}
     replicated:
-      size: {{ $.Values.osds.replicas }}
+      size: {{ default "3" $.Values.osds.replicas }}
   gateway:
     instances: 2
     placement:
@@ -58,8 +58,8 @@ spec:
     erasureCoded:
       codingChunks: 0
       dataChunks: 0
-    failureDomain: {{ $.Values.rgw.failuredomain }}
+    failureDomain: {{ default "zone" $.Values.rgw.failuredomain }}
     replicated:
-      size: {{ $.Values.osds.replicas }}
+      size: {{ default "3" $.Values.osds.replicas }}
 {{- end }}
 {{- end }}

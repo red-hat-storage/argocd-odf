@@ -1,5 +1,9 @@
 # Deployment of ODF with ArgoCD
 
+This Repo intention is to give an example of a Helm chart for ODF and how it can be
+deployed with the help of ArgoCD, it's a starting point for further improvement
+and customization by the final user. Is not an official Redhat supported repo.
+
 1. Fork and clone this Github Repo: https://github.com/red-hat-storage/argocd-odf
 
 ``` 

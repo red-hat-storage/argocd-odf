@@ -66,8 +66,8 @@ rgw:
 # Enable S3 RGW endpoint with SSL
   ssl: true
 # Failure domain for the RGW pools, by default zone, depeding on your deployment you may need to
-# change it to rack, zone or node.
-  failuredomain: zone
+# change it to rack or node. Set to zone by default.
+#  failuredomain: zone
 ###
 
 # If mcg enabled is set to False Nooba/Multicloud gateway will not be deployed.
