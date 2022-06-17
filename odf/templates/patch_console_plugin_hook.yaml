@@ -17,7 +17,7 @@ spec:
             - -c
             - |
               echo "Patching the console to enable ODF console plugin"
-              oc patch consoles.operator.openshift.io cluster --patch ''{ "spec": { "plugins": ["odf-console"] } }'' --type=merge
+              oc patch consoles.operator.openshift.io cluster --patch '{ "spec": { "plugins": ["odf-console"] } }' --type=merge
               if [ $? = 0 ]
               then
                   echo "ODF console enabled, patch was applied ok"
