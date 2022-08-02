@@ -43,4 +43,7 @@ spec:
       requests:
         cpu: '{{ .Values.odf.noobaadb.requests.cpu }}'
         memory: {{ .Values.odf.noobaadb.requests.memory }}
+    noobaa-db-vol:
+      requests:
+        storage: '{{ default "50Gi" .Values.odf.noobaadb.disk }}'
 {{- end }}

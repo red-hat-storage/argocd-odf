@@ -42,6 +42,7 @@ odf:
     requests:
       cpu: 1
       memory: 2Gi
+    disk: 50Gi
   osd:
     requests:
       cpu: 2
