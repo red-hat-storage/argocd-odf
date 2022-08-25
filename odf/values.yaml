@@ -14,7 +14,7 @@ mcgstandalone:
 
 odf:
 # ODF Version/Channel
-  channel: 'stable-4.10'
+  channel: 'stable-4.11'
 # Resource request/limits per service
   mon:
     requests:
