@@ -25,7 +25,7 @@ spec:
                   sleep 10
               done
               echo "ODF Machine worker nodes have finished the deployment" 
-        image: registry.redhat.io/openshift4/ose-cli:v4.7
+        image: registry.redhat.io/openshift4/ose-cli:v4.11
       serviceAccount: query-pods
       serviceAccountName: query-pods
       restartPolicy: Never
