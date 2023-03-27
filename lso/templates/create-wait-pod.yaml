@@ -26,7 +26,7 @@ spec:
               done
               echo "ODF operator has been deployed"
               echo "========================"
-        image:  registry.redhat.io/openshift4/ose-cli:v4.7
+        image:  registry.redhat.io/openshift4/ose-cli:v4.11
       serviceAccount: query-pods
       serviceAccountName: query-pods
       restartPolicy: OnFailure
