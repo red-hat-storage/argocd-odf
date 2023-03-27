@@ -6,13 +6,12 @@ metadata:
   annotations:
     uninstall.ocs.openshift.io/cleanup-policy: delete
     uninstall.ocs.openshift.io/mode: graceful
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   finalizers:
   - storagecluster.ocs.openshift.io
   name: ocs-storagecluster
   namespace: openshift-storage
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   arbiter: {}
   {{- if eq $.Values.osds.scname "localblock" }}
