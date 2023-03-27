@@ -7,7 +7,7 @@
 #be used to discover local attach devices for LSO to use
 lso:
 # LSO version Channel
-  channel: '4.10'
+  channel: 'stable'
 # Number of discovered devices to use per node
   devicecount: 2
 # Type of device to use, ignore Rotational Disks
