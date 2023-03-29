@@ -24,7 +24,7 @@ spec:
               else
                   echo "Failed to patch console"
               fi
-        image: registry.redhat.io/openshift4/ose-cli:v4.7
+        image: registry.redhat.io/openshift4/ose-cli:v4.11
       serviceAccount: openshift-gitops-argocd-application-controller
       serviceAccountName: openshift-gitops-argocd-application-controller
       restartPolicy: Never
